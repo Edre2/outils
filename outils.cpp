@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 
+float SQRT_5 = 2.236067977499789696409173668731;
 
 // std::string CARACTERESSPECIAUX =" '.,;(){}\"\\?/!:&#%$£_-+*|@0123456789\n";
 // int TAILLE_CARSPEC = CARACTERESSPECIAUX.length()
@@ -42,6 +43,17 @@ std::string metttreMaj(std::string message)
    for(int i = 0; i < (int)(message.length()); i++)
       messageFinal += std::toupper(message[i]);
    return messageFinal;
+}
+
+// Ne garde que les lettres d'un message
+std::string garderLettres(std::string message)
+{
+   std::string text = "";
+   for (int i = 0; i < int(message.length()); i++)
+      if (isalpha(message[i]))
+         text += toupper(message[i]);
+
+   return text;
 }
 
 // Met des majuscules au bédut des phrases
@@ -125,6 +137,97 @@ std::string decodagev(std::string text, std::string mot)
            textCode += text[nb3];
     }
     return textCode;
+}
+
+// Retourne les cles potentiellement utilisées pour chiffrer le message avec vigenère
+// std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20, int FREQ_MIN = 10)
+std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20)
+{
+   // On ne garde que les lettres (on s'en fiche du reste)
+   text = garderLettres(text);
+
+   // Liste des mots qui sont peut-être des cles en fonction de la taille de la cle
+   std::string mots_possibles[TAILLE_MAX];
+   for (int i = 0; i < TAILLE_MAX; i ++)
+      mots_possibles[i] = "";
+      
+   // probable[a] dit si la cle est preobablement de longueur a
+   // bool probable[TAILLE_MAX];
+   // for (int i = 0; i < TAILLE_MAX; i ++)
+   //   probable[i] = true;
+
+   // pour chaque longueur de cle, on regarde quelle est la plus petite fréquence de 'e'
+   double freq_e_min[TAILLE_MAX];
+   freq_e_min[0] = 0;
+   for(int i = 1; i < TAILLE_MAX; i++)
+      freq_e_min[i] = 100;
+
+   int longueur = text.length();
+
+   // On teste toutes les longueurs de clés jusqu'à TAILLE_MAX pour voir si les fréquences correspondent au français
+   for(int i = 1; i < TAILLE_MAX; i++)
+   {
+      // On découpe le texte en i parties (codés différement car la clef a i lettres)
+      for(int j = 0; j < i; j++)
+      {
+         // Compte le nombre d'apparition de chaque lettre
+         int compte[26];
+         for (int a = 0; a < 26; a++)
+            compte[a] = 0;
+
+         for(int a = 0; i*a+j < longueur; a++)
+            compte[text[i*a+j]-'A'] ++;
+
+         // Nombre total de lettre dans la partie et lettre la plus frequente
+         int tot = 0;
+         int max = 0;
+         int max_pos = 0;
+
+         for (int a = 0; a<26;a++)
+         {
+            tot += compte[a];
+            if (compte[a] > max)
+            {
+               max = compte[a];
+               max_pos = a;
+            }
+         }
+
+         // Fréquence en pourcentage de la lettre la plus fréquente
+         double freq_max = double(max) / tot * 100;
+
+         if (freq_max < freq_e_min[i])
+            freq_e_min[i] = freq_max;
+
+         // Si elle est pas assez fréquente, c'est sûrement pas la bonne longueur de clé
+         // if (freq_max < FREQ_MIN)
+         //   probable[i] = false;
+
+         // On ajoute la lettre telle que si l'on décode la lettre la plus fréquente avec celle ci, on obtienne un E
+         mots_possibles[i] += char((max_pos - 4 + 26) % 26 + 'A');
+      }
+   }
+
+   // for(int i = 0; i < TAILLE_MAX; i ++)
+   //    if (probable[i])
+   //    {
+   //       return mots_possibles[i];
+   //    }
+
+   double max = 0;
+   int max_pos = 0;
+
+   for (int a = 0; a < TAILLE_MAX; a++)
+      if (freq_e_min[a] > max)
+      {
+         max = freq_e_min[a];
+         max_pos = a;
+      }
+
+   // for (int a = 0; a < TAILLE_MAX; a++)
+   //   std::cout << mots_possibles[a] << " : " << freq_e_min[a] << std::endl;
+
+   return mots_possibles[max_pos];
 }
 
 // Retourne l'analyse de fréquences des lettres (en majuscule) dans un texte
@@ -413,4 +516,76 @@ void NpremsNbsprems(unsigned long long int N,std::vector<int> & nbsprems)
             num++;
          }
      }
+}
+
+// Retourne le terme nb de la suite de fibonacci
+unsigned long long int fibo(int nb)
+{
+   return int((pow(1+SQRT_5, nb)-pow(1-SQRT_5, nb))/(pow(2,nb)*SQRT_5));
+}
+// The same but maybe faster and not as precise
+/*unsigned long long int fibo2(int nb)
+{
+   return int((pow(1+SQRT_5, nb))/(pow(2,nb)*SQRT_5));
+}*/
+
+// returns a fraction that is the approximation of a decimal number
+std::string farey_approximation(float nb, int max_precision = 1000000)
+{
+   int nb_int = int(nb);
+   float nb2 = nb - nb_int;
+   int num_below = 0, den_below = 1, num_above = 1, den_above = 1, num_mediant = 1, den_mediant = 2;
+
+   while (num_mediant < max_precision && den_mediant < max_precision)
+   {
+      if(nb2 > float(num_mediant)/den_mediant)
+      {
+         num_below = num_mediant;
+         den_below = den_mediant;
+         num_mediant = num_mediant + num_above;
+         den_mediant = den_mediant + den_above;
+      }
+      else
+      {
+         num_above = num_mediant;
+         den_above = den_mediant;
+         num_mediant = num_mediant + num_below;
+         den_mediant = den_mediant + den_below;
+      }
+   }
+
+   return std::to_string(num_mediant + nb_int*den_mediant) + "/" + std::to_string(den_mediant);
+}
+// Implémentation de la formule du Héron pour approximer la racine cubique d'un nombre
+long double approximation_racinecubique(int nb, int precision = 40)
+{
+   long double approximation = 0;
+   while(approximation*approximation*approximation <= nb)
+      approximation++;
+   approximation--;
+   if(approximation*approximation*approximation == nb)
+      return approximation;
+
+   for(int i = 0; i < precision; i++)
+      approximation += (nb - approximation*approximation*approximation) / (3*approximation*approximation*approximation);
+
+   return approximation;
+
+}
+
+// Implémentation de la formule du Héron pour approximer la racine carrée d'un nombre
+long double approximation_racinecarre(int nb, int precision = 40)
+{
+   long double approximation = 0;
+   while(approximation*approximation<= nb)
+      approximation++;
+   approximation--;
+   if(approximation*approximation== nb)
+      return approximation;
+
+   for(int i = 0; i < precision; i++)
+      approximation += (nb - approximation*approximation) / (2*approximation);
+
+   return approximation;
+
 }
