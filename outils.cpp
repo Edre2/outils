@@ -1,8 +1,14 @@
 //#include "outils.h"
+#include <cctype>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <cmath>
 #include <vector>
+#include <algorithm>
+
+// for very big numbers :
+#include <boost/multiprecision/cpp_int.hpp>
 
 float SQRT_5 = 2.236067977499789696409173668731;
 
@@ -64,7 +70,7 @@ std::string jolitexte(std::string text)
     for(int nb=2; nb < ((int)(text.length()) ); nb++)
         if( (text[nb-1] == '.' || text[nb-1] == '?' || text[nb-1] == '!' ) || (text[nb - 1] == ' ' && (text[nb-2] == '.' || text[nb-2] == '?' || text[nb-2] == '!')) )
             text[nb] = toupper(text[nb]);
-         else
+        else
             text[nb] = tolower(text[nb]);
     return text;
 
@@ -197,7 +203,7 @@ std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20)
          double freq_max = double(max) / tot * 100;
 
          if (freq_max < freq_e_min[i])
-            freq_e_min[i] = freq_max;
+            freq_e_min[i] = freq_max;   
 
          // Si elle est pas assez fréquente, c'est sûrement pas la bonne longueur de clé
          // if (freq_max < FREQ_MIN)
@@ -228,6 +234,97 @@ std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20)
    //   std::cout << mots_possibles[a] << " : " << freq_e_min[a] << std::endl;
 
    return mots_possibles[max_pos];
+}
+
+void kasiski_test(std::string text, std::vector<int> & distance, int taille = 3)
+{
+    std::vector<std::string> sequences;
+    text = garderLettres(supprimerAccents(text));
+
+    for(int i = 0; i < int(text.length()) - taille; i++)
+        sequences.push_back(text.substr(i, taille));
+        //sequences.push_back(std::to_string(text[i]) + std::to_string(text[i+1]) + std::to_string(text[i+2]));
+    
+    for(int i = 0; i < int(sequences.size()) - 1; i++)
+    {
+        for(int j = i+1; j < int(sequences.size()); j++)
+        {
+            if(sequences[i] == sequences[j])
+            {
+                distance.push_back(j-i);
+                //std::cout << j-i << " : " << sequences[i] << std::endl;
+            }
+        }
+    }
+}
+
+int get_key_length(std::string text)
+{
+    std::vector<int> distances;
+    for(int seqLen = 5; seqLen >= 3; seqLen--)
+    {
+        kasiski_test(text, distances, seqLen);
+
+        if(distances.size() >= 3)
+        {
+            int key_length = distances[0];
+
+            for(int i = 1; i < int(distances.size()); i++)
+                key_length = std::__gcd(key_length, distances[i]);
+
+            return key_length;
+        }
+    }
+
+    if(distances.size() > 0)
+    {
+        int key_length = distances[0];
+
+        for(int i = 1; i < int(distances.size()); i++)
+            key_length = std::__gcd(key_length, distances[i]);
+
+        return key_length;
+    }
+
+    return 1;
+}
+
+std::string get_key(std::string text)
+{
+    int taille_clef = get_key_length(text);
+    text = garderLettres(metttreMaj(supprimerAccents(text)));
+    std::string clef = "";
+
+    // On découpe le texte en taille_clef parties (codés différement car la clef a taille_clef lettres)
+      for(int j = 0; j < taille_clef; j++)
+      {
+         // Compte le nombre d'apparition de chaque lettre
+         int compte[26];
+         for (int a = 0; a < 26; a++)
+            compte[a] = 0;
+
+         for(int a = 0; taille_clef*a+j < int(text.length()); a++)
+            compte[text[taille_clef*a+j]-'A'] ++;
+
+         // Nombre total de lettre dans la partie et lettre la plus frequente
+         int tot = 0;
+         int max = 0;
+         int max_pos = 0;
+
+         for (int a = 0; a<26;a++)
+         {
+            tot += compte[a];
+            if (compte[a] > max)
+            {
+               max = compte[a];
+               max_pos = a;
+            }
+         }
+         // On ajoute la lettre telle que si l'on décode la lettre la plus fréquente avec celle ci, on obtienne un E
+         clef += char((max_pos - 4 + 26) % 26 + 'A');
+      }
+
+    return clef;
 }
 
 // Retourne l'analyse de fréquences des lettres (en majuscule) dans un texte
@@ -274,9 +371,33 @@ void analyse(std::string text, std::vector<int> & alphabet)
         alphabet.push_back(0);
 
      for (int nb2 = 0; nb2 < int(text.length()); nb2++)
-        if(text[nb2] > 64 && text[nb2] < 91)
+        if(std::isalpha(text[nb2]))
             alphabet[(int)(text[nb2]) - 65] ++;
 }
+
+double index_of_coincidence(std::string text)
+{
+    text = garderLettres(supprimerAccents(text));
+    boost::multiprecision::cpp_int l = text.length();
+
+    std::vector<int> alphabet;
+    analyse(text, alphabet);
+
+    boost::multiprecision::cpp_int index_of_coincidence = 0;
+
+    for(int i = 0; i < 26; i++)
+    {
+        index_of_coincidence += boost::multiprecision::cpp_int (alphabet[i] * (alphabet[i] - 1));
+
+    }
+
+    return double(index_of_coincidence) / double((l)*(l-1));
+}
+
+//int get_key_length_ioc(std::string text)
+//{
+
+//}
 
 // Codage par substitution (on entre le text + la substitution (=
 /*
@@ -519,7 +640,7 @@ void NpremsNbsprems(unsigned long long int N,std::vector<int> & nbsprems)
 }
 
 // Retourne le terme nb de la suite de fibonacci
-unsigned long long int fibo(int nb)
+long long int fibo(int nb)
 {
    return int((pow(1+SQRT_5, nb)-pow(1-SQRT_5, nb))/(pow(2,nb)*SQRT_5));
 }
