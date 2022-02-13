@@ -1,5 +1,8 @@
 # Outils
-Quelques outils en cpp (par exemple : crypter/décrypter avec le chiffrement vigenère, savoir si un nombre est premier...)
+Quelques outils en `c++`, `python` et `javascript`. \
+Il y a surtout des fonctions : 
+- pour faire de la cryptographie  crypter/décrypter avec le chiffrement vigenère, décrypter automatiquement...)
+- savoir si un nombre est permies, approximer un nombre réel avec une fraction (en `c++` seulement)
 
 # L'utiliser :
 Dans votre fichier en `c++`, écrivez la ligne `#include "outils.cpp"` \
@@ -7,7 +10,7 @@ Dans un ficher en `pyhton`, ajoutez `import * from outils` \
 En `javascript` il devrait y avoir un moyen de faire la même chose mais je ne sais pas comment faire, donc copiez/collez tout le contenu dans votre fichier si vous ne savez pas non plus. 
 
 # Exemple
-Un exemple d'utilisation en `javascript` est disponibla sur [ce site](https///edre2.github.io/codage/codage.html) \
+Un exemple d'utilisation en `javascript` est disponibla sur [ce site](https://edre2.github.io/codage/codage.html) \
 EN `c++`, vous pouvez jeter un oeil à `test.cpp` (tout est commenté, libre à vous de décommenter ce que vous voulez pour faire des tests, des textes codés avec vigenère ainsi que la clé utilisée sont inclus) \
 En `pyhton`, débrouillez vous.
 
@@ -40,7 +43,8 @@ double index_of_coincidence(std::string text); // Calcule l'index of coincidence
 std::string versAutreBase(int nb, int base); // Convertit un nombre de la base 10 vers la base 'base'
 int versBaseDix(std::string nb, int base); // Convertit un nombre de la base 'base' vers la base 10
 
-bool estPrems(unsigned long long int nb);     // Retourne si un nombre est premier
+bool estPrems(long long nb);     // Retourne si un nombre est premier
+bool estprems_big(boost::multiprecision::cpp_int nb); // Retourne si un vraiment grand nombre est premier
 void factprems(unsigned long long int nb, std::vector<int> & factprems);     // Retourne les facteurs premiers d'un nombre dans le vector 'factprems'
 void diviseurs(unsigned long long int nb, std::vector<int> & diviseurs);    // Pas fini
 
