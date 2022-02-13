@@ -1,5 +1,4 @@
 //#include "outils.h"
-#include <boost/multiprecision/integer.hpp>
 #include <cctype>
 #include <iostream>
 #include <ostream>
@@ -7,9 +6,6 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
-
-// for very big numbers :
-#include <boost/multiprecision/cpp_int.hpp>
 
 float SQRT_5 = 2.236067977499789696409173668731;
 
@@ -379,16 +375,16 @@ void analyse(std::string text, std::vector<int> & alphabet)
 double index_of_coincidence(std::string text)
 {
     text = garderLettres(supprimerAccents(text));
-    boost::multiprecision::cpp_int l = text.length();
+    int l = text.length();
 
     std::vector<int> alphabet;
     analyse(text, alphabet);
 
-    boost::multiprecision::cpp_int index_of_coincidence = 0;
+    int index_of_coincidence = 0;
 
     for(int i = 0; i < 26; i++)
     {
-        index_of_coincidence += boost::multiprecision::cpp_int (alphabet[i] * (alphabet[i] - 1));
+        index_of_coincidence += alphabet[i] * (alphabet[i] - 1);
 
     }
 
@@ -428,58 +424,7 @@ std::string codages()
     }
 
     return textCode;
-}
-
-std::string decodages()
-{
-    std::string mot = m_texte.toStdstd::string();
-
-    for(int nb = 0; nb < 26; nb++)
-    {
-        if(m_lettresubstitution[nb] != '\0')
-        {
-            int nb2 = m_lettresubstitution[nb] - 'A';
-            correspondancelettre[nb2] = nb;
-        }
-    }
-
-    mot = this->supprimerAccents(mot);
-
-    std::string textCode = "";
-
-    for(int nb = 0; nb < (int)(mot.length()); nb++)
-    {
-        std::string caracteresspeciaux =" '.,;(){}\"\\?/!:0123456789\n";
-        bool isspecial = false;
-        for(int nb8=0; nb8 < (int)(caracteresspeciaux.length()); nb8++)
-        {
-            if(mot[nb] == caracteresspeciaux[nb8])
-                isspecial = true;
-        }
-        mot[nb] = toupper(mot[nb]);
-        int lettre = mot[nb] - 'A';
-        char lettre2 = correspondancelettre[lettre] + 'A';
-        if( isspecial || (correspondancelettre[lettre] == 26) )
-          textCode = textCode + mot[nb];
-        else
-          textCode = textCode + lettre2;
-    }
-
-    for(int nb89 = 0; nb89 < ((int)(textCode.length())); nb89++)
-        textCode[nb89] = tolower(textCode[nb89]);
-
-    textCode[0] = toupper(textCode[0]);
-
-    for(int nb=2; nb < ((int)(textCode.length()) - 1); nb++)
-    {
-        if( (textCode[nb-1] == '.' || textCode[nb-1] == '?' || textCode[nb-1] == '!' ) || (textCode[nb - 1] == ' ' && (textCode[nb-2] == '.' || textCode[nb-2] == '?' || textCode[nb-2] == '!')) )
-            textCode[nb] = toupper(textCode[nb]);
-    }
-
-    return textCode;
-}
-*/
-
+}*/
 
 std::string versAutreBase(int nb, int base)
 {
@@ -545,29 +490,6 @@ bool estPrems(long long nb)
     // on peut ne tester que les nombres premiers <= à sqrt_n
     // (on en teste même un peu plus mais bon...)
     for (int i = 5; i <= sqrt_nb; i += 6)
-       if (nb % i == 0 || nb % (i+2) == 0)
-            return false;
-
-    return true;
-}
-
-bool estprems_big(boost::multiprecision::cpp_int nb)
-{
-    if(nb <= 3)
-        return nb > 1;
-    if(nb % 2 == 0 || nb % 3 == 0)
-        return false;
-    boost::multiprecision::cpp_int sqrt_nb = boost::multiprecision::sqrt(nb);
-    // Les nombres premiers sont de la forme 6k+1 ou 6k-1
-    // Preuve :
-    // Si n % 6 = 1, alors n peut être premier
-    // Si n % 6 = 0, 2, 4, alors 2 | n
-    // Si n % 6 = 3, alors 3 | n
-    // Si n % 6 = 5 = -1, alors n peut être premier
-
-    // on peut ne tester que les nombres premiers <= à sqrt_n
-    // (on en teste même un peu plus mais bon...)
-    for (boost::multiprecision::cpp_int i = 5; i <= sqrt_nb; i += 6)
        if (nb % i == 0 || nb % (i+2) == 0)
             return false;
 
