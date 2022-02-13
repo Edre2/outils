@@ -1,11 +1,4 @@
-//#include "outils.h"
-#include <cctype>
-#include <iostream>
-#include <ostream>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <algorithm>
+#include "outils.h"
 
 float SQRT_5 = 2.236067977499789696409173668731;
 
@@ -144,7 +137,7 @@ std::string decodagev(std::string text, std::string mot)
 
 // Retourne les cles potentiellement utilisées pour chiffrer le message avec vigenère
 // std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20, int FREQ_MIN = 10)
-std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20)
+std::string decodage_automatique_v(std::string text, int TAILLE_MAX)
 {
    // On ne garde que les lettres (on s'en fiche du reste)
    text = garderLettres(text);
@@ -233,7 +226,7 @@ std::string decodage_automatique_v(std::string text, int TAILLE_MAX = 20)
    return mots_possibles[max_pos];
 }
 
-void kasiski_test(std::string text, std::vector<int> & distance, int taille = 3)
+void kasiski_test(std::string text, std::vector<int> & distance, int taille)
 {
     std::vector<std::string> sequences;
     text = garderLettres(supprimerAccents(text));
@@ -609,7 +602,7 @@ long long int fibo(int nb)
 }*/
 
 // returns a fraction that is the approximation of a decimal number
-std::string farey_approximation(float nb, int max_precision = 1000000)
+std::string farey_approximation(float nb, int max_precision)
 {
    int nb_int = int(nb);
    float nb2 = nb - nb_int;
@@ -636,7 +629,7 @@ std::string farey_approximation(float nb, int max_precision = 1000000)
    return std::to_string(num_mediant + nb_int*den_mediant) + "/" + std::to_string(den_mediant);
 }
 // Implémentation de la formule du Héron pour approximer la racine cubique d'un nombre
-long double approximation_racinecubique(int nb, int precision = 40)
+long double approximation_racinecubique(int nb, int precision)
 {
    long double approximation = 0;
    while(approximation*approximation*approximation <= nb)
@@ -653,7 +646,7 @@ long double approximation_racinecubique(int nb, int precision = 40)
 }
 
 // Implémentation de la formule du Héron pour approximer la racine carrée d'un nombre
-long double approximation_racinecarre(int nb, int precision = 40)
+long double approximation_racinecarre(int nb, int precision)
 {
    long double approximation = 0;
    while(approximation*approximation<= nb)

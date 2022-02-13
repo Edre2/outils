@@ -1,17 +1,7 @@
-#include <boost/multiprecision/integer.hpp>
-#include <cctype>
-#include <iostream>
-#include <ostream>
-#include <string>
-#include <cmath>
-#include <vector>
-#include <algorithm>
-
 // for very big numbers :
 #include <boost/multiprecision/cpp_int.hpp>
 
-#include "outils.cpp"
-
+#include "outils.h"
 
 bool estprems_big(boost::multiprecision::cpp_int nb)
 {

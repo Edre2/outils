@@ -1,9 +1,5 @@
-#include <boost/multiprecision/cpp_int.hpp>
-#include <iostream>
-#include "outils.cpp"
+#include "outils.h"
 #include <iomanip> // for std::setprecision()
-#include <string>
-#include <vector>
 #include <fstream>
 using namespace std;
 

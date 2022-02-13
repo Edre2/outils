@@ -5,13 +5,40 @@ Il y a surtout des fonctions :
 - savoir si un nombre est permies, approximer un nombre réel avec une fraction (en `c++` seulement)
 
 # L'utiliser :
-Dans votre fichier en `c++`, écrivez la ligne `#include "outils.cpp"`. \
-Dans un ficher en `pyhton`, ajoutez `import * from outils`. \
-En `javascript` il devrait y avoir un moyen de faire la même chose mais je ne sais pas comment faire, donc copiez/collez tout le contenu dans votre fichier si vous ne savez pas non plus. 
+- Dans votre fichier en `c++`, écrivez la ligne `#include "outils.h"`. \
+Pour l'éxecuter dans un IDE, ça devrait marcher tour seul. \
+Pour éxécuter votre code avec `g++`, vous devrez alors entrer les commandes (sous Linux) :
+``` bash
+g++ -c outils.cpp -O2 - Wall -Wextra -Werror
+g++ -c test.cpp -O2 - Wall -Wextra -Werror
+g++ outils.o test.o -o NomDuProgramme
+./NomDuProgramme
+```
+Vous pouvez faire un script bash :
+``` bash
+#!/bin/bash
+
+for var in "$@"
+do
+   g++ -c "$var" -O2 - Wall -Wextra -Werror
+done
+
+g++ *.o -o truc
+./truc
+rm truc
+rm *.o
+```
+Puis définir un alias pour le lancer (par exemple `cpp`), pour compiler et exécuter le code, vous n'aurez plus qu'à lancer : 
+```bash
+cpp outils.cpp test.cpp
+```
+Et le script supprimera également les fichiers créés à l'occasion. \
+- Dans un ficher en `pyhton`, ajoutez `import * from outils`. \
+- En `javascript` il devrait y avoir un moyen de faire la même chose mais je ne sais pas comment faire, donc copiez/collez tout le contenu dans votre fichier si vous ne savez pas non plus. 
 
 # Exemple
 Un exemple d'utilisation en `javascript` est disponible sur [ce site](https://edre2.github.io/codage/codage.html) pour la partie cryptographie et [ce site](https://edre2.github.io/nombres/nombres.html) pour la partie sur les nombres.\
-EN `c++`, vous pouvez jeter un oeil à `test.cpp` (tout est commenté, libre à vous de décommenter ce que vous voulez pour faire des tests, des textes codés avec vigenère ainsi que la clé utilisée sont inclus). \
+En `c++`, vous pouvez jeter un oeil à `test.cpp` (tout est commenté, libre à vous de décommenter ce que vous voulez pour faire des tests, des textes codés avec vigenère ainsi que la clé utilisée sont inclus). \
 En `pyhton`, débrouillez vous (c'est pas très compliqué).
 
 # Fonctions disponibles
