@@ -12,14 +12,24 @@ ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # Met toutes les lettres du texte en majuscules et enlève les accents et les
 # espaces et la ponctuation
+def removeAll(texte : str, to_remove: str):
+    for suppr in to_remove:
+        texte=texte.replace(suppr,"")
+    return texte
+
 def format(texte :str, remove=" ,;:!?.()[]{}-+=*\n"):
-    return unidecode.unidecode(texte).replace(" ","").upper()
+    return removeAll(unidecode.unidecode(texte).upper(),remove)
+
+# Retourne la lettre la plus fréquente du texte
+def plus_frequente(texte: str):
+    dictionnaire={texte.count(i):i for i in ALPHABET}
+    return dictionnaire[max(dictionnaire)]
 
 def garderLettres(texte :str):
    text_final = ""
-   for a in range(len(texte)):
-      if ord('A') <= ord(texte[a].upper()) and ord('Z') >= ord(texte[a].upper()):
-         text_final += texte[a].upper()
+   for a in texte:
+      if a.isalpha():
+        text_final += a.upper()
    return text_final
 
 # Une fonction qui crypte un texte avec le code de César en décalant les
@@ -50,6 +60,9 @@ def decrypt_c(texte :str, n :int):
             texte_decrypte += chr((ord(lettre)-n-65) % 26 + 65)
     return texte_decrypte
 
+# Décode automatiquement un code césar
+def decodage_automatique_c(texte :str):
+    return decrypt_c(texte, (plus_frequente(format(texte))-65-4)%26)
 
 # Une fonction qui crypte un texte avec le code Vigenère et le mot
 def crypt_v(texte :str, mot :str):
@@ -141,14 +154,25 @@ def decodage_automatique_v(texte :str, TAILLE_MAX = 20):
          
 # A function that returns if a number is a prime number or not
 def isprime(nb :int):
-    if nb <= 1:
+    if nb <= 3:
+        return nb > 1
+    if nb % 2 == 0 or nb % 3 == 0:
         return False
 
-    nb2 = 2
-    while (nb2 < math.sqrt(nb)):
-        if nb % nb2 == 0:
+    sqrt_nb = math.ceil(math.sqrt(nb))
+    # Les nombres premiers sont de la forme 6k+1 ou 6k-1
+    # Preuve :
+    # Si n % 6 = 1, alors n peut être premier
+    # Si n % 6 = 0, 2, 4, alors 2 | n
+    # Si n % 6 = 3, alors 3 | n
+    # Si n % 6 = 5 = -1, alors n peut être premier
+
+    # on peut ne tester que les nombres premiers <= à sqrt_n
+    # (on en teste même un peu plus mais bon...)
+
+    for i in range(5, sqrt_nb, 6):
+        if nb % i == 0 or nb % (i +2) == 0:
             return False
-        nb2 += 1
     
     return True
 
@@ -156,10 +180,9 @@ def isprime(nb :int):
 # that already has them
 def primeNbs():
     input_file = open("../intPrimeTo2000000.txt", "r")
-    primeNbs = []
-    for line in input_file.readlines():
-        primeNbs.append(int(line))
-    return primeNbs
+    with open(input_file,"r") as f:
+        nbsPrems=list(map(int,f.read().split("\n")))
+    return nbsPrems
 
 # A function that returns the prime factors of an integer using a file with the
 # prime numbers until 2 000 000 to be faster by not testing not prime numbers
@@ -173,3 +196,24 @@ def primeFacts(nb :int):
             factprems.append(i)
         i += 1
     return factprems
+
+# Retourne les nombres premiers jusqu'à n
+def NbsPremsjusquaN(n :int):
+    if n <= 0:
+        return 0
+    if n == 1:
+        return [2]
+    nbsPrems = [2,3]
+
+    for i in range(5,n,6):
+        for j in nbsPrems:
+            if i%j==0:
+                break
+        else:
+            nbsPrems.append(i)
+        for j in nbsPrems:
+            if (i+2)%j==0:
+                break
+        else:
+            nbsPrems.append(i+2)
+    return nbsPrems

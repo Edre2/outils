@@ -1,3 +1,4 @@
+#include <boost/multiprecision/cpp_int.hpp>
 #include <iostream>
 #include "outils.cpp"
 #include <iomanip> // for std::setprecision()
@@ -9,6 +10,12 @@ using namespace std;
 int main()
 {
 
+    // boost::multiprecision::cpp_int a = 838947915628470415334561123513;
+    // boost::multiprecision::cpp_int a = 500912466059711711;
+    // if(estprems_big(a))
+    //     cout << "yes";
+    // else
+    // cout << "no";
     // std::cout << std::setprecision(2); // show 16 digits of precision
 
    // string text = "Sensation\te laisserai le vent baigner ma tête nue.\n \n Je ne parlerai pas, je ne penserai rien :\n Mais l’amour infini me montera dans l’âme,\n Et j’irai loin, bien loin, comme un bohémien,\n Par la Nature, – heureux comme avec une femme.";

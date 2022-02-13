@@ -1,4 +1,5 @@
 //#include "outils.h"
+#include <boost/multiprecision/integer.hpp>
 #include <cctype>
 #include <iostream>
 #include <ostream>
@@ -527,13 +528,48 @@ int versBaseDix(std::string nb, int base)
     return nouveauNombre;
 }
 
-bool estPrems(unsigned long long int nb)
+bool estPrems(long long nb)
 {
-    if(nb <= 1)
+    if(nb <= 3)
+        return nb > 1;
+    if(nb % 2 == 0 || nb % 3 == 0)
         return false;
-    for (int nb2 = 2; nb2 <= (int)(sqrt(nb)); nb2 ++)
-       if (nb % nb2 == 0)
-                    return false;
+    int sqrt_nb = std::sqrt(nb);
+    // Les nombres premiers sont de la forme 6k+1 ou 6k-1
+    // Preuve :
+    // Si n % 6 = 1, alors n peut être premier
+    // Si n % 6 = 0, 2, 4, alors 2 | n
+    // Si n % 6 = 3, alors 3 | n
+    // Si n % 6 = 5 = -1, alors n peut être premier
+
+    // on peut ne tester que les nombres premiers <= à sqrt_n
+    // (on en teste même un peu plus mais bon...)
+    for (int i = 5; i <= sqrt_nb; i += 6)
+       if (nb % i == 0 || nb % (i+2) == 0)
+            return false;
+
+    return true;
+}
+
+bool estprems_big(boost::multiprecision::cpp_int nb)
+{
+    if(nb <= 3)
+        return nb > 1;
+    if(nb % 2 == 0 || nb % 3 == 0)
+        return false;
+    boost::multiprecision::cpp_int sqrt_nb = boost::multiprecision::sqrt(nb);
+    // Les nombres premiers sont de la forme 6k+1 ou 6k-1
+    // Preuve :
+    // Si n % 6 = 1, alors n peut être premier
+    // Si n % 6 = 0, 2, 4, alors 2 | n
+    // Si n % 6 = 3, alors 3 | n
+    // Si n % 6 = 5 = -1, alors n peut être premier
+
+    // on peut ne tester que les nombres premiers <= à sqrt_n
+    // (on en teste même un peu plus mais bon...)
+    for (boost::multiprecision::cpp_int i = 5; i <= sqrt_nb; i += 6)
+       if (nb % i == 0 || nb % (i+2) == 0)
+            return false;
 
     return true;
 }
