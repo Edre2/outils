@@ -5,17 +5,18 @@ Il y a surtout des fonctions :
 - savoir si un nombre est permies, approximer un nombre réel avec une fraction (en `c++` seulement)
 
 # L'utiliser :
-Dans votre fichier en `c++`, écrivez la ligne `#include "outils.cpp"` \
-Dans un ficher en `pyhton`, ajoutez `import * from outils` \
+Dans votre fichier en `c++`, écrivez la ligne `#include "outils.cpp"`. \
+Dans un ficher en `pyhton`, ajoutez `import * from outils`. \
 En `javascript` il devrait y avoir un moyen de faire la même chose mais je ne sais pas comment faire, donc copiez/collez tout le contenu dans votre fichier si vous ne savez pas non plus. 
 
 # Exemple
-Un exemple d'utilisation en `javascript` est disponibla sur [ce site](https://edre2.github.io/codage/codage.html) \
-EN `c++`, vous pouvez jeter un oeil à `test.cpp` (tout est commenté, libre à vous de décommenter ce que vous voulez pour faire des tests, des textes codés avec vigenère ainsi que la clé utilisée sont inclus) \
-En `pyhton`, débrouillez vous.
+Un exemple d'utilisation en `javascript` est disponible sur [ce site](https://edre2.github.io/codage/codage.html) pour la partie cryptographie et [ce site](https://edre2.github.io/nombres/nombres.html) pour la partie sur les nombres.\
+EN `c++`, vous pouvez jeter un oeil à `test.cpp` (tout est commenté, libre à vous de décommenter ce que vous voulez pour faire des tests, des textes codés avec vigenère ainsi que la clé utilisée sont inclus). \
+En `pyhton`, débrouillez vous (c'est pas très compliqué).
 
 # Fonctions disponibles
-Voici les fonctions disponibles : (elles ssont listées en `c++` mais les même sont (quasiment toutes) disponibles en `python` et `javascript`)
+Voici les fonctions disponibles : 
+- en `c++` :
 ``` cpp
 std::string supprimerAccents(std::string message);   // Supprime tous les accents du message
 std::string metttreMaj(std::string message);    // Met tout le texte en majuscules
@@ -37,7 +38,7 @@ std::string get_key(std::string text); // Utilise get_key_length puis trouve la 
 // std::string decodages(); // Pas encore prêt
 
 std::string analyse(std::string text); // Retourne une analyse du texte sous forme de texte
-void analyse(std::string text, std::vector<int> & alphabet)  // Retourne une le nombre d'ocurence de chaque lettre dans un vector
+void analyse(std::string text, std::vector<int> & alphabet);  // Retourne une le nombre d'ocurence de chaque lettre dans un vector
 double index_of_coincidence(std::string text); // Calcule l'index of coincidence d'un texte
 
 std::string versAutreBase(int nb, int base); // Convertit un nombre de la base 10 vers la base 'base'
@@ -55,4 +56,54 @@ long long int fibo(int nb); //Retourne le terme nb de la suite de fibonacci
 std::string farey_approximation(float nb, int max_precision = 1000000); // retourne une fraction (de la forme "45/67") qui est une approximation d'un nombre réel (à virgule)
 long double approximation_racinecubique(int nb, int precision = 40); // retourne une approximation de la racine cubique
 long double approximation_racinecarre(int nb, int precision = 40); // retourne une approximation de la racine carré
+```
+- en `python` :
+``` py
+# Met toutes les lettres du texte en majuscules et enlève les accents et les espaces et la ponctuation
+removeAll(texte : str, to_remove: str)
+# Enlève les caractères de remove et les accents
+format(texte :str, remove=" ,;:!?.()[]{}-+=*\n")
+# Retourne la lettre la plus fréquente du texte
+plus_frequente(texte: str)
+# Ne garde que les lettres d'un message
+garderLettres(texte :str)
+# Une fonction qui crypte un texte avec le code de César en décalant les lettres de l'alphabet de n
+crypt_c(texte :str, n :int)
+# Une fonction qui decrypte un texte avec le code de César en décalant les lettres de l'alphabet de n
+decrypt_c(texte :str, n :int)
+# Décode automatiquement un code césar
+decodage_automatique_c(texte :str)
+# Une fonction qui crypte un texte avec le code Vigenère et le mot
+crypt_v(texte :str, mot :str)
+# Une fonction qui crypte un texte avec le code Vigenère et le mot
+decrypt_v(texte :str, mot :str)
+# Une fonciton qui décrypte automatiquement un message chiffré avec vigenère
+decodage_automatique_v(texte :str, TAILLE_MAX = 20)
+# A function that returns if a number is a prime number or not
+isprime(nb :int)
+# A function that returns the prime numbers until 2 000 000 by reading a file that already has them
+primeNbs()
+# A function that returns the prime factors of an integer 
+primeFacts(nb :int)
+# Retourne les nombres premiers jusqu'à n
+NbsPremsjusquaN(n :int)
+```
+
+- en `javascript` :
+``` js
+supprimerAccents(message)
+mettreMaj(message)
+garderLettres(message)
+addl(char1, char2)
+sousl(char1, char2) 
+codagev(message, mot)
+decodagev(message, mot) 
+decodage_automatique_v(message, taille_max = 20)
+analyse(message)
+convertBase(value, from_base, to_base) 
+estPrems(n)
+diviseurs(nombre)
+NbsPremsjusquaN(nombre)
+farey_approximation(nombre, precision)
+pgcd(a,  b)
 ```

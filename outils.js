@@ -164,7 +164,7 @@ function convertBase(value, from_base, to_base) {
   }
 
   function diviseurs(nombre) {
-      nb_diviseurs = new Array();
+      let nb_diviseurs = new Array();
       for(let i = 0; i < nombre; i++) {
           if(nombre % i == 0) {
               nb_diviseurs.push(i);
@@ -174,7 +174,7 @@ function convertBase(value, from_base, to_base) {
   }
 
   function NbsPremsjusquaN(nombre) {
-      nbprems = new Array();
+      let nbprems = new Array();
       nbprems.push(2);
 
       for(let i = 3; i <= nombre; i++) {

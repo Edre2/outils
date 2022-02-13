@@ -33,7 +33,7 @@ def garderLettres(texte :str):
    return text_final
 
 # Une fonction qui crypte un texte avec le code de César en décalant les
-# lettres de l'alphabetde n
+# lettres de l'alphabet de n
 def crypt_c(texte :str, n :int):
     texte = format(texte)
     texte_crypte = ""
