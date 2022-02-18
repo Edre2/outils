@@ -32,8 +32,12 @@ Puis définir un alias pour le lancer (par exemple `cpp`), pour compiler et exé
 ```bash
 cpp outils.cpp test.cpp
 ```
-Et le script supprimera également les fichiers créés à l'occasion. \
-- Dans un ficher en `pyhton`, ajoutez `import * from outils`. \
+PLus simplement, cette commande marche également (mais elle est moins générale):
+``` bash
+ g++ -c outils.cpp && g++ -c test.cpp && g++ -o test outils.o test.o && ./test
+```
+Et le script supprimera également les fichiers créés à l'occasion. 
+- Dans un ficher en `pyhton`, ajoutez `import * from outils`. 
 - En `javascript` il devrait y avoir un moyen de faire la même chose mais je ne sais pas comment faire, donc copiez/collez tout le contenu dans votre fichier si vous ne savez pas non plus. 
 
 # Exemple
@@ -68,8 +72,7 @@ std::string analyse(std::string text); // Retourne une analyse du texte sous for
 void analyse(std::string text, std::vector<int> & alphabet);  // Retourne une le nombre d'ocurence de chaque lettre dans un vector
 double index_of_coincidence(std::string text); // Calcule l'index of coincidence d'un texte
 
-std::string versAutreBase(int nb, int base); // Convertit un nombre de la base 10 vers la base 'base'
-int versBaseDix(std::string nb, int base); // Convertit un nombre de la base 'base' vers la base 10
+std::string convertBase(std::string value, int from_base, int to_base); // convertit un nombre d'une base vers une autre
 
 bool estPrems(long long nb);     // Retourne si un nombre est premier
 bool estprems_big(boost::multiprecision::cpp_int nb); // Retourne si un vraiment grand nombre est premier
@@ -134,3 +137,6 @@ NbsPremsjusquaN(nombre)
 farey_approximation(nombre, precision)
 pgcd(a,  b)
 ```
+
+# TODO
+- implémenter `int get_key_length_ioc(std::string texte)` en `c++` (puis dans les autres languages)
