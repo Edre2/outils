@@ -36,6 +36,15 @@ std::string supprimerAccents(std::string message)
 
     return message;
 }
+std::string supprimerEspace(std::string message)
+{
+    std::string nouveauMessage;
+    for(int i = 0; i < int(message.length()); i++)
+        if(message[i] != ' ')
+            nouveauMessage += message[i];
+
+    return nouveauMessage;
+}
 
 std::string mettreMaj(std::string message)
 {
@@ -679,6 +688,8 @@ long double calculer_notation_polonaise_inversee(std::string calcul)
 
 long double calculer(std::string calcul)
 {
+    calcul = supprimerEspace(calcul);
+
     std::string operateurs = "+-*/^";
 
     std::vector<std::string> calcul_split;

@@ -16,6 +16,7 @@
 // PARTIE SUR LES TEXTES
 
 std::string supprimerAccents(std::string message);   // Supprime tous les accents du message
+std::string supprimerEspace(std::string message); // Supprime tous les espaces du message
 std::string metttreMaj(std::string message);    // Met tout le texte en majuscules
 std::string jolitexte(std::string texte);   // Met tout le texte en minucules et met des majuscules au début des phrase
 std::string garderLettres(std::string message); // Ne garde que les lettres d'un messga
