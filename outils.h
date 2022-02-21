@@ -8,6 +8,10 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <sstream>
+#include <queue> // Pour queue et priority_queue soient définies
+#include <stack> // Pour stack
+#include <map>
 
 // PARTIE SUR LES TEXTES
 
@@ -19,6 +23,9 @@ std::string garderLettres(std::string message); // Ne garde que les lettres d'un
 int indexFromString(std::string texte, char caractere);
 
 double index_of_coincidence(std::string texte); // Calcule l'index of coincidence d'un texte
+
+void split(std::string texte, char separator, std::vector<std::string> & texte_split); // split le texte autour du separateur
+void split_multiple_char(std::string texte, std::string separators, std::vector<std::string> & texte_split);
 
 char addl(char l, char l2 );   // Additionne deux caractères (utilisé dans codagev)
 char sousl(char l, char l2 );   //  Soustrait deux caractères (utilisé dans decodagev)
@@ -52,5 +59,20 @@ long long int fibo(int nb); //Retourne le terme nb de la suite de fibonacci
 std::string farey_approximation(float nb, int max_precision = 1000000); // retourne une fraction (de la forme "45/67") qui est une approximation d'un nombre réel (à virgule)
 long double approximation_racinecubique(int nb, int precision = 40); // retourne une approximation de la racine cubique
 long double approximation_racinecarre(int nb, int precision = 40); // retourne une approximation de la racine carré
+
+
+// CALCULATRICE
+
+enum class Associativite {droite, gauche, indefini};
+long double op(long double nb1, long double nb2, char operateur); // calcule l'opération entre nb1 et nb2
+int operateur_priorite(std::string operateur);
+Associativite operateur_associativite(std::string operateur);
+bool isNumber(const std::string& str);
+
+
+long double calculer_notation_polonaise_inversee(std::string calcul);
+long double calculer(std::string calcul);
+
+long double eval(std::string calcul); // calule le calcul
 
 #endif // OUTILS_H

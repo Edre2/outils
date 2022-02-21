@@ -1,0 +1,3 @@
+# ignore all files used to compile c++
+*.o
+test

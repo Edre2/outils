@@ -4,8 +4,6 @@ float SQRT_5 = 2.236067977499789696409173668731;
 
 // std::string CARACTERESSPECIAUX =" '.,;(){}\"\\?/!:&#%$£_-+*|@0123456789\n";
 
-
-
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 //////////////////// PARTIE SUR LES TEXTES /////////////////////
@@ -94,6 +92,31 @@ double index_of_coincidence(std::string texte)
         index_of_coincidence += alphabet[i] * (alphabet[i] - 1);
 
     return double(index_of_coincidence) / double((l)*(l-1));
+}
+
+void split(std::string texte, char separator, std::vector<std::string> & texte_split)
+{
+    std::stringstream streamData(texte);
+    std::string val;
+    while (std::getline(streamData, val, separator)) {
+        texte_split.push_back(val);
+    }
+}
+
+void split_multiple_char(std::string texte, std::string separators, std::vector<std::string> & texte_split)
+{
+    texte_split.push_back("");
+    for(int i = 0; i < int(texte.length()); i++)
+    {
+        if(separators.find(texte[i]) != std::string::npos)
+        {
+            texte_split.push_back("");
+            texte_split[texte_split.size()-1] += texte[i];
+            texte_split.push_back("");
+        }
+        else
+            texte_split[texte_split.size()-1] += texte[i];
+    }
 }
 
 // Codage vigenère : 
@@ -514,7 +537,7 @@ void NpremsNbsprems(long long int N,std::vector<int> & nbsprems)
          if (estprems)
          {
              nbsprems.push_back(nb);
-             num ++
+             num ++;
          }
      }
 }
@@ -582,4 +605,191 @@ long double approximation_racinecarre(int nb, int precision)
       approximation += (nb - approximation*approximation) / (2*approximation);
 
    return approximation;
+}
+
+
+// Calculatrice
+long double op(long double nb1, long double nb2, char operateur)
+{
+    switch(operateur)
+    {
+        case '+': return nb1 + nb2; break;
+        case '-': return nb1 - nb2; break;
+        case '*': return nb1 * nb2; break;
+        case '/': if(nb2 == 0) throw std::invalid_argument("Division par 0"); return nb1 / nb2; break;
+        case '^': return pow(nb1, nb2); break;
+        default : throw std::invalid_argument("Opération invalide: pas d'opérateur");
+    }
+}
+
+// Retourne la priorité d'un opérateur
+int operateur_priorite(std::string operateur)
+{
+    static std::map<std::string, int> operateurs{{"+", 10}, {"-", 10}, {"*", 20}, {"/", 20}, {"^", 30}};
+
+    if (operateurs.find(operateur) == std::end(operateurs))
+            return -1;
+    return operateurs[operateur];
+}
+// Retourne l'associativité d'un opérateur
+Associativite operateur_associativite(std::string operateur)
+{
+    static std::map<std::string, Associativite> operateurs{{"+", Associativite::gauche}, {"-", Associativite::gauche}, {"*", Associativite::gauche}, {"/", Associativite::gauche}, {"^", Associativite::droite}};
+
+    if (operateurs.find(operateur) == std::end(operateurs))
+            return Associativite::indefini;
+    return operateurs[operateur];
+}
+bool isNumber(const std::string& str)
+{
+    if(str.length() == 0) return false;
+    for (char const &c : str) {
+        if (std::isdigit(c) == 0 && c != '.') return false;
+    }
+    return true;
+}
+
+long double calculer_notation_polonaise_inversee(std::string calcul)
+{
+    std::stack<long double> pile;
+    std::string operateurs = "+-*/^";
+
+    std::vector<std::string> calcul_split;
+    split(calcul, ' ', calcul_split);
+    
+    for(int i = 0; i < int(calcul_split.size()); i++)
+    {
+        if(isNumber(calcul_split[i]))
+        {
+            pile.push(std::stold(calcul_split[i]));
+        }
+        else if(operateurs.find(calcul_split[i]) != std::string::npos)
+        {
+            long double nb1 = pile.top();
+            pile.pop();
+            long double nb2 = pile.top();
+
+            pile.pop();
+            pile.push(op(nb2, nb1, calcul_split[i][0]));
+        }
+    }
+
+    return pile.top();
+}
+
+long double calculer(std::string calcul)
+{
+    std::string operateurs = "+-*/^";
+
+    std::vector<std::string> calcul_split;
+    split_multiple_char(calcul, operateurs + "()", calcul_split);
+
+    // On transforme le calcul en une exprssion en notation polonaise inversée dans le stack pile :
+    std::queue<std::string> file;
+    std::stack<std::string> pile;
+
+    for(int i = 0; i < int(calcul_split.size()); i++)
+    {
+        if(isNumber(calcul_split[i]))
+            file.push(calcul_split[i]);
+        else if(operateurs.find(calcul_split[i]) != std::string::npos && calcul_split[i] != "")
+        {
+            while(!pile.empty())
+            { 
+                if (operateurs.find(pile.top()) == std::string::npos)
+                    break;
+                if ((operateur_associativite(calcul_split[i]) == Associativite::gauche && operateur_priorite(calcul_split[i]) <= operateur_priorite(pile.top())) ||  (operateur_associativite(calcul_split[i]) == Associativite::droite && operateur_priorite(calcul_split[i]) < operateur_priorite(pile.top())))
+                {
+                    file.push(pile.top());
+                    pile.pop();
+                }
+                else
+                    break;
+            }
+            pile.push(calcul_split[i]);
+        }
+        else if(calcul_split[i] == "(")
+            pile.push(calcul_split[i]);
+        else if(calcul_split[i] == ")")
+        {
+            while(pile.top() != "(")
+            {
+                file.push(pile.top());
+                pile.pop();
+            }
+            pile.pop();
+        }
+    }
+
+    while(!pile.empty())
+    {
+        if(operateurs.find(pile.top()) != std::string::npos)
+            file.push(pile.top());
+        pile.pop();
+    }
+
+    std::string calcul_notation_polonaise_inversee = "";
+    while(!file.empty())
+    {
+        if(file.front() != " " && file.front() != "")
+            calcul_notation_polonaise_inversee += file.front() + " ";
+        file.pop();
+    }
+
+    // std::cout << calcul_notation_polonaise_inversee << std::endl;
+    // On calule cette expression :
+    return calculer_notation_polonaise_inversee(calcul_notation_polonaise_inversee);
+}
+
+long double eval(std::string calcul)
+{
+    std::string autorise = "0123456789^*/+-";
+    for(int i = 0; i < int(calcul.length()); i++)
+        if(autorise.find(calcul[i]) == std::string::npos)
+            return -1;
+
+    double resultat = 0;
+    std::vector<std::string> calcul_split;
+
+    if (calcul.find('+') != std::string::npos)
+    {
+        split(calcul, '+', calcul_split);
+        resultat = eval(calcul_split[0]);
+        for(int i = 1; i < int(calcul_split.size()); i++)
+            resultat += eval(calcul_split[i]);
+    }
+    else if (calcul.find('-') != std::string::npos)
+    {
+        split(calcul, '-', calcul_split);
+        resultat = eval(calcul_split[0]);
+        for(int i = 1; i < int(calcul_split.size()); i++)
+            resultat -= eval(calcul_split[i]);
+    }
+    else if (calcul.find('*') != std::string::npos)
+    {
+        split(calcul, '*', calcul_split);
+        resultat = eval(calcul_split[0]);
+        for(int i = 1; i < int(calcul_split.size()); i++)
+            resultat *= eval(calcul_split[i]);
+    }
+    else if (calcul.find('/') != std::string::npos)
+    {
+        split(calcul, '/', calcul_split);
+        resultat = eval(calcul_split[0]);
+        for(int i = 1; i < int(calcul_split.size()); i++)
+            resultat /= eval(calcul_split[i]);
+    }
+    else if (calcul.find('^') != std::string::npos)
+    {
+        split(calcul, '^', calcul_split);
+        resultat = eval(calcul_split[0]);
+        for(int i = 1; i < int(calcul_split.size()); i++)
+            resultat = pow(resultat, eval(calcul_split[i]));
+    }
+    else
+    {
+        return std::stold(calcul);
+    }
+
+    return resultat;
 }
