@@ -12,6 +12,7 @@
 #include <queue> // Pour queue et priority_queue soient définies
 #include <stack> // Pour stack
 #include <map>
+#include <regex>
 
 // PARTIE SUR LES TEXTES
 

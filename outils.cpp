@@ -689,6 +689,10 @@ long double calculer_notation_polonaise_inversee(std::string calcul)
 long double calculer(std::string calcul)
 {
     calcul = supprimerEspace(calcul);
+    // Pas très optimisé mais bon...
+    calcul = std::regex_replace(calcul, std::regex("×"), "*");
+    calcul = std::regex_replace(calcul, std::regex("÷"), "/");
+    calcul = std::regex_replace(calcul, std::regex("−"), "-");
 
     std::string operateurs = "+-*/^";
 
