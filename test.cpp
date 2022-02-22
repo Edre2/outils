@@ -137,10 +137,8 @@ int main()
 
     // cout << eval("1+1") << endl;
     // cout << op(3,1, '/') << "\n";
-    // cout << calculer_notation_polonaise_inversee("1.9 2 + 2.5 * 1.2 ^") << endl;
-    //cout << calculer_notation_polonaise_inversee("1 3 5 2 + * +") << endl;
-    
-    // cout << calculer("32*(48+2)-23^2") << endl;
+    // cout << calculer_notation_polonaise_inversee("9 4 %") << endl;
+    // cout << calculer("sin(2) + cos(3) * sqrt(25) - 23^2") << endl;
 
     return EXIT_SUCCESS;
 }

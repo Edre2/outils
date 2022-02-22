@@ -1,4 +1,8 @@
 #include "outils.h"
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <stdexcept>
 
 float SQRT_5 = 2.236067977499789696409173668731;
 
@@ -627,23 +631,42 @@ long double op(long double nb1, long double nb2, char operateur)
         case '*': return nb1 * nb2; break;
         case '/': if(nb2 == 0) throw std::invalid_argument("Division par 0"); return nb1 / nb2; break;
         case '^': return pow(nb1, nb2); break;
+        case '%': return int(nb1) % int(nb2); break;
         default : throw std::invalid_argument("Opération invalide: pas d'opérateur");
     }
+}
+long double fun(long double nb, std::string fonction)
+{
+    if(fonction ==  "sin") return std::sin(nb);
+    if(fonction ==  "asin") return std::asin(nb); 
+    if(fonction ==  "cos") return std::cos(nb);
+    if(fonction ==  "acos") return std::acos(nb);
+    if(fonction ==  "tan") return std::tan(nb);
+    if(fonction ==  "atan") return std::atan(nb);
+    if(fonction ==  "sqrt") return std::sqrt(nb);
+    throw std::invalid_argument("Fonction invalide");
+}
+long double fun(long double nb1, long double nb2, std::string fonction)
+{
+    if(fonction ==  "max") return std::max(nb1, nb2);
+    if(fonction ==  "pgcd") return std::__gcd(int(nb1), int(nb2));
+    if(fonction ==  "gcd") return std::__gcd(int(nb1), int(nb2));
+    throw std::invalid_argument("Fonction invalide");
 }
 
 // Retourne la priorité d'un opérateur
 int operateur_priorite(std::string operateur)
 {
-    static std::map<std::string, int> operateurs{{"+", 10}, {"-", 10}, {"*", 20}, {"/", 20}, {"^", 30}};
+    static std::map<std::string, int> operateurs{{"+", 10}, {"-", 10}, {"*", 20}, {"/", 20}, {"%", 20}, {"^", 30}};
 
     if (operateurs.find(operateur) == std::end(operateurs))
-            return -1;
+            return 100;
     return operateurs[operateur];
 }
 // Retourne l'associativité d'un opérateur
 Associativite operateur_associativite(std::string operateur)
 {
-    static std::map<std::string, Associativite> operateurs{{"+", Associativite::gauche}, {"-", Associativite::gauche}, {"*", Associativite::gauche}, {"/", Associativite::gauche}, {"^", Associativite::droite}};
+    static std::map<std::string, Associativite> operateurs{{"+", Associativite::gauche}, {"-", Associativite::gauche}, {"*", Associativite::gauche}, {"/", Associativite::gauche}, {"%", Associativite::gauche}, {"^", Associativite::droite}};
 
     if (operateurs.find(operateur) == std::end(operateurs))
             return Associativite::indefini;
@@ -661,7 +684,9 @@ bool isNumber(const std::string& str)
 long double calculer_notation_polonaise_inversee(std::string calcul)
 {
     std::stack<long double> pile;
-    std::string operateurs = "+-*/^";
+    std::string operateurs = "+-*/%^";
+    std::string fonctions_1_argument = "asinacosatansqrt";
+    std::string fonctions_2_argument = "maxpgcd";
 
     std::vector<std::string> calcul_split;
     split(calcul, ' ', calcul_split);
@@ -681,6 +706,21 @@ long double calculer_notation_polonaise_inversee(std::string calcul)
             pile.pop();
             pile.push(op(nb2, nb1, calcul_split[i][0]));
         }
+        else if(fonctions_1_argument.find(calcul_split[i]) != std::string::npos)
+        {
+            long double nb = pile.top();
+            pile.pop();
+            pile.push(fun(nb, calcul_split[i]));
+        }
+        else if(fonctions_2_argument.find(calcul_split[i]) != std::string::npos)
+        {
+             long double nb1 = pile.top();
+            pile.pop();
+            long double nb2 = pile.top();
+
+            pile.pop();
+            pile.push(fun(nb2, nb1, calcul_split[i]));
+        }
     }
 
     return pile.top();
@@ -694,14 +734,17 @@ long double calculer(std::string calcul)
     calcul = std::regex_replace(calcul, std::regex("÷"), "/");
     calcul = std::regex_replace(calcul, std::regex("−"), "-");
 
-    std::string operateurs = "+-*/^";
+    std::string operateurs = "+-*/%^";
 
     std::vector<std::string> calcul_split;
-    split_multiple_char(calcul, operateurs + "()", calcul_split);
+    split_multiple_char(calcul, operateurs + "(),", calcul_split);
 
     // On transforme le calcul en une exprssion en notation polonaise inversée dans le stack pile :
     std::queue<std::string> file;
     std::stack<std::string> pile;
+
+    // On ajoute les fonctions
+    operateurs += "asinacosatansqrtmaxpgcd";
 
     for(int i = 0; i < int(calcul_split.size()); i++)
     {
